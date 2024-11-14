@@ -1,0 +1,156 @@
+@font-face {
+    font-family: 'CatFont'; 
+    src: url('/static/catfont.otf') format('opentype'); 
+} 
+
+@font-face {
+    font-family: 'itim';
+    src: url('/static/itim.ttf') format('TrueType');
+}
+
+h1 {
+    font-family: 'CatFont', sans-serif;
+    font-size: 60px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+h2 {
+    text-align: center;
+    font-size: 25px;
+    font-family: 'itim', sans-serif;
+    color: #E40613;
+    text-shadow: 2px 2px black;
+    margin-bottom: 30px;
+}
+
+.fa-star {
+    font-size: 30px;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.fa-star.checked {
+    color: orange;
+}
+
+.fa-star:hover,
+.fa-star:hover ~ .fa-star {
+    color: orange;
+}
+
+.fa-star:hover ~ .fa-star {
+    color: #ccc;
+}
+
+body {
+    background: #FAF4E8;
+    text-align: center;
+}
+
+img {
+    display: block;
+    margin: 20px auto;
+    width: 400px; /* Fixed width */
+    height: 400px; /* Fixed height */
+    object-fit: cover; /* Ensures the image covers the area without distortion */
+    border: 5px solid #cccccc;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+button {
+    margin: 10px;
+    border: none;
+    background-color: #ffc067;
+    padding: 10px;
+    font-family: 'itim', sans-serif;
+    font-weight: bold;
+    border-radius: 8px;
+    transition-duration: 0.4s;
+    box-shadow: 0 5px #403f3f;
+}
+
+.cat-button:hover {
+    background-color: #D46666;
+    color: black;
+}
+
+.cat-button:active {
+    background-color: #D46666;
+    box-shadow: 0 1px #292828;
+    transform: translateY(4px);
+}
+
+.cat-button {
+    position: relative;
+    background-color: #F08080;
+    border: none;
+    color: black;
+    padding: 15px 20px;
+    font-size: 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    outline: none;
+}
+
+.cat-button::before,
+.cat-button::after {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 20px;
+    background-color: #F08080;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    top: -15px;
+    z-index: 1;
+    transition-duration: 0.4s;
+}
+
+.cat-button::before {
+    left: 10px;
+}
+
+.cat-button::after {
+    right: 10px;
+}
+
+.cat-button:hover {
+    background-color: #D46666;
+}
+
+.cat-button:hover::before,
+.cat-button:hover::after {
+    background-color: #D46666;
+}
+
+.cat-button:active {
+    background-color: #D46666;
+    box-shadow: 0 1px #292828;
+    transform: translateY(4px);
+}
+
+.cat-button:active::before,
+.cat-button:active::after {
+    background-color: #B44D4D;
+}
+
+p{
+    font-family: 'itim', sans-serif;
+    font-weight: bold;
+}
+
+.card-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
