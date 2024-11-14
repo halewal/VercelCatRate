@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <link rel="apple-touch-icon" sizes="180x180" href="static/apple-touch-icon.png">
+   <link rel="icon" type="image/png" sizes="32x32" href="static/favicon-32x32.png">
+   <link rel="icon" type="image/png" sizes="16x16" href="static/favicon-16x16.png">
+   <link rel="manifest" href="static/site.webmanifest">
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   <!-- Font Awesome for star icons -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+   <title>Rate Random Cat Pics</title>
+
+   <style>
+       /* Additional styling for the card container */
+       .card-container {
+           max-width: 500px; /* Adjust width as needed */
+           margin: 0 auto; /* Center the card */
+           padding: 20px;
+           background-color: #FFFFFF; /* Card background color */
+           border-radius: 15px; /* Rounded corners */
+           box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow */
+           border: 1px solid #ddd; /* Light border */
+           text-align: center; /* Center-align all elements */
+       }
+
+       /* Add some initial styling for the warning text */
+       .warning {
+           color: red;
+           font-weight: bold;
+           margin-bottom: 20px;
+       }
+   </style>
+</head>
+<body>
+   <div class="card-container">
+       <h1>Rate Cat Pics!</h1>
+       <h2 class="warning">Warning: The photos work, but they take a while to load.</h2>
+
+       <!-- Cat image -->
+       <img id="petimage" src="{{ url }}" alt="Random Pet" data-image-id="">
+       <br>
+       <button id="newCatbutton" style="margin-bottom:20px;" class="cat-button">NEW CAT!</button>
+
+       <!-- Star Rating Section -->
+       <div id="rating-section">
+           <i class="fa fa-star" data-value="1"></i>
+           <i class="fa fa-star" data-value="2"></i>
+           <i class="fa fa-star" data-value="3"></i>
+           <i class="fa fa-star" data-value="4"></i>
+           <i class="fa fa-star" data-value="5"></i>
+       </div>
+
+       <p style="font-family:itim, sans-serif;">Average Rating: <span id="avg-score">0</span></p>
+       <p style="font-family:itim, sans-serif;">Views: <span id="views">0</span></p>
+   </div>
+
+   <script>
+       $(document).ready(function() {
+           setTimeout(function() {
+               $('.warning').fadeOut(1500);
+           }, 4000);
+
+           let userHasRated = false;  // Prevent rating spam
+
+           fetchStats();  // Load initial stats
+
+           // Fetch a new cat image when button is clicked
+           $('#newCatbutton').click(function() {
+               $.ajax({
+                   url: '/get_cat',
+                   method: 'GET',
+                   success: function(data) {
+                       $('#petimage').attr('src', data.url);  // Fixed to use 'url'
+                       $('#petimage').attr('data-image-id', data.url);  // Store image ID
+                       resetStars();  // Reset stars for the new image
+                       fetchStats();  // Update stats
+                       userHasRated = false;  // Reset flag
+                   },
+                   error: function(xhr, status, error) {
+                       console.error("Error fetching new cat image:", error);
+                   }
+               });
+           });
+
+           // Star rating hover effect
+           $('.fa-star').hover(function() {
+               let rating = $(this).data('value');
+               highlightStars(rating);
+           });
+
+           // Submit rating when a star is clicked
+           $('.fa-star').click(function() {
+               if (!userHasRated) {
+                   let rating = $(this).data('value');
+                   submitRating(rating);
+                   userHasRated = true;
+               } else {
+                   alert("You have already rated this image!");
+               }
+           });
+       });
+
+       // Highlight stars on hover
+       function highlightStars(rating) {
+           $('.fa-star').each(function() {
+               let value = $(this).data('value');
+               if (value <= rating) {
+                   $(this).addClass('checked');
+               } else {
+                   $(this).removeClass('checked');
+               }
+           });
+       }
+
+       // Reset stars
+       function resetStars() {
+           $('.fa-star').removeClass('checked');
+       }
+
+       // Submit rating to server
+       function submitRating(rating) {
+           const imageId = $('#petimage').attr('data-image-id');
+           $.ajax({
+               url: '/rate_cat',
+               method: 'POST',
+               contentType: 'application/json',
+               data: JSON.stringify({ rating: rating, image_id: imageId }),
+               success: function() {
+                   fetchStats();  // Update stats after rating
+               },
+               error: function(xhr, status, error) {
+                   console.error("Error submitting rating:", error);
+               }
+           });
+       }
+
+       // Fetch stats (average rating, views)
+       function fetchStats() {
+           const imageId = $('#petimage').attr('data-image-id');
+           $.ajax({
+               url: '/get_stats',
+               method: 'GET',
+               data: { image_id: imageId },
+               success: function(data) {
+                   if (data.error) {
+                       console.error(data.error);
+                   } else {
+                       $('#avg-score').text(data.avg_rating);
+                       $('#views').text(data.views);
+                   }
+               },
+               error: function(xhr, status, error) {
+                   console.error("Error fetching stats:", error);
+               }
+           });
+       }
+   </script>
+</body>
+</html>
