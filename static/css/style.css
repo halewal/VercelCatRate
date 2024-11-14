@@ -94,7 +94,7 @@ button {
 }
 
 .cat-button:active {
-    background-color: #D46666;
+    background-color: #B44D4D;
     box-shadow: 0 1px #292828;
     transform: translateY(4px);
 }
